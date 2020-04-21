@@ -5,11 +5,6 @@ const long SPEED_MIN (1150);
 const long SPEED_MAX (2000);
 const long SPEED_NEU (1150);
 
-/*const long INPUT_START = -1000;
-const long INPUT_END = 1000;
-const long OUTPUT_START = SPEED_MIN;
-const long OUTPUT_END = SPEED_MAX;*/
-
 ESC Ry (11, SPEED_MIN, SPEED_MAX, 500);
 ESC Rx (10, SPEED_MIN, SPEED_MAX, 500);
 ESC Lx (6, SPEED_MIN, SPEED_MAX, 500);
@@ -21,22 +16,19 @@ SoftwareSerial mySerial =  SoftwareSerial(rxPin, txPin);
 
 String readString;
 
-long values[] = {SPEED_MIN, SPEED_MIN, SPEED_MIN, SPEED_MIN};  // Rx, Ry, Lx, Ly
+long values[] = {SPEED_MIN, SPEED_MIN, SPEED_MIN, SPEED_MIN};
 ESC escs[] = {Rx, Ry, Lx, Ly};
 
 void send_values() {
   for (int i = 0; i <= 3; i++) {
     escs[i].speed(values[i]);
-    //Serial.print((String) values[i] + " ");
   }
-  //Serial.println();
 }
 
 void sticksNeutral() {
   for (int i = 0; i <= 3; i++) {
     values[i] = SPEED_NEU;
   }
-  //Serial.println("Caution: set to 1150µs (slow spinning)"); // DEBUG
 }
 
 void armMotors() {
@@ -44,16 +36,16 @@ void armMotors() {
     escs[i].arm();
     delay(100);
   }
-  Serial.println("Caution: motors are armed"); // DEBUG
+  Serial.println("Caution: motors are armed");
 }
 
 void startMotors() {
-  Serial.println("Starting motors"); // DEBUG
+  Serial.println("Starting motors");
   armMotors();
   delay(1000);
   sticksNeutral();
   delay(500);
-  Serial.println("Motors should be spinning now"); // DEBUG
+  Serial.println("Motors should be spinning now");
 }
 
 void updateESCvalues(String side, long x_val, long y_val) {
@@ -80,30 +72,13 @@ long get_value(char dir, long value) {
     return (long) value % 1024;
   }
 }
-/*
-long map_values(long value) {
-  return map(value, INPUT_START, INPUT_END, OUTPUT_START, OUTPUT_END);
-}
 
-long convert_minus(long val, String sign) {
-  if (sign == "-") {
-    return val * -1;
-  } else {
-    return val;
-  }
-}
-*/
 void process_message(String msg) {
     String side = readString.substring(1, 2);
     String x = readString.substring(3, 7);
     String y = readString.substring(8, 12);
 
-    //long x = get_value('x', value.toInt());
-    //long y = get_value('y', value.toInt());
-    //Serial.println((String) x + " " + (String) y);
-
     updateESCvalues(side, x.toInt(), y.toInt());
-    //Serial.println(side + " " + (String) x + " " + (String) y);
 }
 
 void setup() {
